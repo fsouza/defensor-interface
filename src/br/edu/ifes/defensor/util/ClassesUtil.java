@@ -102,7 +102,7 @@ public class ClassesUtil {
 	
 	/**
      * Retorna o método setter de um atributo informado.
-	 * @param cls TODO
+	 * @param cls Classe na qual o método será buscado
 	 * @param field
      *         Atributo do qual pretende-se obter o método setter.
      * 

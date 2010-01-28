@@ -59,13 +59,10 @@ public class Cliente {
                 System.out.println(((JTextField)dc.getComponent()).getText());
             }
         } catch (NotAnnotedClassException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (MethodNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (DefensorException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

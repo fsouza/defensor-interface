@@ -13,7 +13,7 @@ import java.util.Vector;
  * @version 1.5
  * 
  */
-public class RowSorter implements Comparator<Vector> {
+public class RowSorter implements Comparator<Vector<? extends Object>> {
 
 	private boolean asc;
 	private int index;
@@ -33,7 +33,7 @@ public class RowSorter implements Comparator<Vector> {
 	}
 
 	@Override
-	public int compare(Vector x, Vector y) {
+	public int compare(Vector<? extends Object> x, Vector<? extends Object> y) {
 		Object o1 = x.get(this.index);
 		Object o2 = y.get(this.index);
 
@@ -73,13 +73,13 @@ public class RowSorter implements Comparator<Vector> {
 				return 1;
 			} else if (o2 == null) {
 				return -1;
-			} else if (o1 instanceof String && o2 instanceof String) {
+			} else if (o1.getClass().equals(String.class) && o2.getClass().equals(String.class)) {
 				if (this.asc) {
 					return o1.toString().compareToIgnoreCase(o2.toString());
 				} else {
 					return o2.toString().compareToIgnoreCase(o1.toString());
 				}
-			} else if (o1 instanceof Comparable) {
+			} else if (o1.getClass().isAssignableFrom(Comparable.class)) {
 				if (this.asc) {
 					return ((Comparable) o1).compareTo(o2);
 				} else {
