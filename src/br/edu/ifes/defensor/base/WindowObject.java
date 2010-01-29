@@ -1,11 +1,10 @@
 package br.edu.ifes.defensor.base;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.vidageek.mirror.dsl.Mirror;
 import br.edu.ifes.defensor.adapters.InterfaceAdapter;
 import br.edu.ifes.defensor.adapters.SwingAdapter;
 import br.edu.ifes.defensor.annotations.Component;
@@ -14,7 +13,6 @@ import br.edu.ifes.defensor.annotations.Component.InterfaceComponent;
 import br.edu.ifes.defensor.exception.DefensorException;
 import br.edu.ifes.defensor.exception.MethodNotFoundException;
 import br.edu.ifes.defensor.exception.NotAnnotedClassException;
-import br.edu.ifes.defensor.util.ClassesUtil;
 
 /**
  * Classe que representa um objeto de janela, contendo um objeto de regra de
@@ -130,27 +128,17 @@ public class WindowObject {
      */
     private DComponent buildComponent(Component componentAnnotation, Field field) throws MethodNotFoundException, DefensorException {
         try {
-            Object[] emptyArray = {};
-
-            Method getMethod = null;
+            Mirror mirror = new Mirror();
             String label = componentAnnotation.label();
             InterfaceComponent swingComponent = componentAnnotation.swingComponent();
             java.awt.Component component = this.adapter.getComponentFor(swingComponent);
             if (this.fill) {
-                Object returnedValue = null;
-                getMethod = ClassesUtil.getGetterMethodOfField(this.dObject.getClass(), field);
-                returnedValue = getMethod.invoke(this.dObject, emptyArray);
-                this.adapter.setValueOfComponent(component, returnedValue);
+                Object fieldValue = mirror.on(this.dObject).get().field(field);
+                this.adapter.setValueOfComponent(component, fieldValue);
             } else {
                 this.fill = Boolean.TRUE;
             }
             return new DComponent(label, component, field);
-        } catch (MethodNotFoundException e) {
-            throw new MethodNotFoundException("O atributo " + field.getName() + " não possui um método getter!", e);
-        } catch (InvocationTargetException e) {
-            throw new MethodNotFoundException(
-                    "Erro de acesso a um objeto: houve uma tentativa de invocação de um método dentro de um objeto, porém o método não existe dentro de tal objeto.",
-                    e);
         } catch (Exception e) {
             throw new DefensorException("Erro na geração de um componente.", e);
         }
